@@ -5,19 +5,6 @@ import pandas as pd
 from os.path import exists
 from string import digits
 
-
-choices = "Usable arguments:\n\t-add,remove,show,create"
-
-
-
-
-"""
-con = sqlite3.connect("abcddata.db")
-cur = con.cursor()
-cur.execute(f"Update data2 set 'kaplan'='33' where '''")
-con.commit()
-con.close
-"""
 def Create(name):
     con = sqlite3.connect(name)
     cur = con.cursor()
