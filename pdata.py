@@ -8,16 +8,8 @@ from string import digits
 
 choices = "Usable arguments:\n\t-add,remove,show,create"
 
+print(argv)
 
-
-
-"""
-con = sqlite3.connect("abcddata.db")
-cur = con.cursor()
-cur.execute(f"Update data2 set 'kaplan'='33' where '''")
-con.commit()
-con.close
-"""
 def Create(name):
     con = sqlite3.connect(name)
     cur = con.cursor()
@@ -100,7 +92,7 @@ def Delete(table):
     except KeyboardInterrupt:
         print("\nthe program has been closed")
 
-def Show(table):
+def ShowAll(table):
     cur.execute(f"SELECT * FROM {table}")
     rows = cur.fetchall()
 
@@ -116,8 +108,22 @@ def Show(table):
             data[list(data.keys())[per]].append(i[per])
     #print(data)
     print(pd.DataFrame(data))
+def ShowIndex(table,Index):
+    cur.execute(f"SELECT {Index} FROM {table}")
+    rows = cur.fetchall()
+
+    data = {}
 
 
+    for des in cur.description:
+        #print(des[0])
+        data.update({des[0]:[]})
+    for i in rows:                    #print(i)
+        for per in range(len(cur.description)):
+            pass
+            data[list(data.keys())[per]].append(i[per])
+    #print(data)
+    print(pd.DataFrame(data))
 def Update(table):
     try:
         cur.execute(f"SELECT * FROM {table}")
@@ -142,7 +148,7 @@ def Update(table):
         newRow = []
         oldRow = []
         for num in range(len(keys)):
-            print(keys[num],structure[num])
+            #print(keys[num],structure[num])
             if not structure[num] in digits:
                 newRow.append(f"{keys[num]} = '{structure[num]}'")
             elif structure[num] in digits:
@@ -152,6 +158,11 @@ def Update(table):
         con.commit()
     except KeyboardInterrupt:
         print("\nthe program has been closed")
+
+
+def Info(table):
+    cur.execute(f"SELECT * FROM *")
+    print(cur.description)
 
 
 
@@ -187,13 +198,20 @@ else:
             except IndexError:
                 print("usage: pdata remove file.db tableName")
         elif "show" == argv[1].lower():
-            try:
-                Show(argv[3])
-            except IndexError:
-                print("usage: pdata show file.db tableName")
+            #try:
+            if len(argv) == 4:
+                ShowAll(argv[3])
+            elif len(argv) == 5:
+                print("Use , to select multiple indexes")
+                ShowIndex(argv[3],argv[4])
+            else:
+                #except IndexError:
+                print("usage: pdata show file.db tableName\n\t\tos\nusage: pdata show file.db tableName Index")
         elif "update"== argv[1].lower():
             try:
                 Update(argv[3])
             except IndexError:
                 print("usage: pdata update file.db tableName")
+        elif "info" == argv[1].lower():
+            Info(argv[2])
         con.close()
