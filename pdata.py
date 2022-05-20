@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import sqlite3
-import struct
 from sys import argv
 import pandas as pd
 from os.path import exists
